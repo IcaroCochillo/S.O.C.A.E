@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block 'title' %}Turmas{% endblock %}
+
+{% block 'body' %}
+    <div class="">
+        <div class="d-flex justify-content-around my-5">
+            <div>
+                <h1 class="text-light">Turmas</h1>
+            </div>
+            <div>
+                <button 
+                    type="button" 
+                    class="btn btn-primary btn-lg"
+                    {% if not request.user.is_superuser %}
+                        disabled
+                    {% endif %}
+                    data-bs-toggle="modal" data-bs-target="#modalTurma"
+                >
+                Adicionar turma
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            {% for t in turmas %}
+                <div class="col-sm-4 mb-3 mb-sm-0 my-3">
+                    <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">{{t.nome_turma}}</h5>
+                        <p class="card-text">{{t.ano}}</p>
+                        <div class="d-flex justify-content-around mt-3">
+                            {% if request.user.turma.id == t.id %}
+                                <a href="{% url "listar-materias" %}" class="btn btn-primary">Ver materias</a>
+                                {% if request.user.lider%}
+                                    <a href="#" class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#modalTurma" 
+                                        data-bs-idturma="{{t.id}}"
+                                        data-bs-nometurma="{{t.nome_turma}}"
+                                        data-bs-anoturma="{{t.ano}}"
+                                        data-bs-tipo="editar"
+                                    >
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a href="{% url 'excluir-turma' t.id %}" class="btn btn-danger" onclick="return confirm('Tem certeza de que deseja excluir esta turma?')"><i class="fa-solid fa-trash"></i></a>
+                                {% endif %}
+                            {% endif %}
+                        </div>                
+                    </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalTurma" tabindex="-1" aria-labelledby="modalTurmaLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalTurmaLabel">Criar Turma</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url "criar-turma" %}" method="POST" id="formTurma">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                        </div>
+                        {% for field in formTurma %}
+                            <div class="mb-3">
+                                {{ field|as_crispy_field }}
+                            </div>
+                        {% endfor %}
+                        <div class="col">
+                            <button style="width: 100%;" id="buttonSubmit" class="btn submit text-light btn-success my-2" type="submit">
+                                Salvar
+                            </button>
+                            <button style="width: 100%;" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Fechar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block 'script' %}
+    <script>
+        const modalTurma = document.getElementById('modalTurma')
+        if (modalTurma) {
+            modalTurma.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+
+            const idturma = button.getAttribute('data-bs-idturma');
+            const nometurma = button.getAttribute('data-bs-nometurma');
+            const anoturma = button.getAttribute('data-bs-anoturma');      
+            const tipo = button.getAttribute('data-bs-tipo');
+
+            const modalTitle = modalTurma.querySelector('.modal-title');
+            
+            var id_nome_turma = document.getElementById('id_nome_turma');
+            var id_ano = document.getElementById('id_ano');
+            var form = document.getElementById('formTurma');
+
+            id_nome_turma.value = nometurma;
+            id_ano.value = anoturma;
+            if(tipo=="editar"){
+                form.action = `/turma/editar/${idturma}/`;
+                modalTitle.textContent = `Editando a turma ${nometurma}`;
+            }else{
+                form.action = `/turma/criar/`;
+                modalTitle.textContent = `Criar turma`
+            }
+        })
+        }
+    </script>
+{% endblock 'script' %}

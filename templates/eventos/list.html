@@ -1,0 +1,168 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block 'title' %}Eventos{% endblock %}
+
+{% block 'body' %}
+
+    <style>
+        .fc-event{
+            background-color: #fff;
+        }
+    </style>
+    <div class="">
+        <div class="d-flex justify-content-around my-5">
+            <div>
+                <h1 class="text-light">Evento</h1>
+            </div>
+            <div>
+                <button 
+                    type="button" 
+                    class="btn btn-primary btn-lg"
+                    {% if not request.user.lider %}
+                        disabled
+                    {% endif %}
+                    data-bs-toggle="modal" data-bs-target="#modalEvento"
+                    data-bs-tipo="criar"
+                >
+                Adicionar Evento
+                </button>
+            </div>
+        </div>
+        <div class="container">
+            <div id='calendar' style="background-color: #A6A6A6;"></div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalEvento" tabindex="-1" aria-labelledby="modalEventoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalEventoLabel">Criar Evento</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url "criar-evento" %}" method="POST" id="formEvento">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                        </div>
+                        {% for field in formEvento %}
+                            <div class="mb-3">
+                                {{ field|as_crispy_field }}
+                            </div>
+                        {% endfor %}
+                        <div class="col">
+                            {% if request.user.lider %}
+                                <button style="width: 100%;" id="buttonSubmit" class="btn submit text-light btn-success mt-2" type="submit">
+                                    Salvar
+                                </button>
+                                <div id="deleteEvento"></div>
+                            {% endif %}
+                            <button style="width: 100%;" type="button" class="btn btn-secondary mt-2" data-bs-dismiss="modal">
+                                Fechar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block 'script' %}
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.6/index.global.min.js'></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'pt-br',
+                height: "auto",
+                themeSystem: "bootstrap5",
+                headerToolbar: {
+                    start: "prev",
+                    center: "title",
+                    end: "next",
+                },
+
+                selectable: true,
+                
+                events: [
+                    {% for e in eventos %}
+                        {
+                            title: '{{e.titulo}}',
+                            descricao: '{{e.descricao}}',
+                            start: '{{e.data|date:"Y-m-d\TH:i:s" }}',
+                            id: {{e.id}},
+                            color: '#000',
+                        },
+                    {% endfor %}
+                ],
+
+                eventClick: function(info) {
+                    var event = info.event;
+                    let modalEvento = document.getElementById('modalEvento');
+                    const modalTitle = modalEvento.querySelector('.modal-title');
+                    const start = new Date(event.start);
+                    const year = start.getFullYear();
+                    const month = (start.getMonth() + 1).toString().padStart(2, '0');
+                    const day = start.getDate().toString().padStart(2, '0');
+                    const hours = start.getHours().toString().padStart(2, '0');
+                    const minutes = start.getMinutes().toString().padStart(2, '0');
+                    const formattedDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+                    
+                    modalTitle.textContent = `Editando o material ${event.title}`;
+                    
+                    document.getElementById('id_titulo').value = event.title;
+                    document.getElementById('id_descricao').value = event.extendedProps.descricao;
+                    document.getElementById('id_data').value = formattedDate;
+                    
+                    var form = document.getElementById('formEvento');
+                    form.action = `/evento/editar/${event.id}/`;
+                    
+                    var deleteEvento = document.getElementById('deleteEvento');
+                    if(deleteEvento){
+                        var deleteLink = document.createElement('a');
+                        deleteLink.href = `/evento/excluir/${event.id}/`;
+                        deleteLink.className = 'btn text-light btn-danger mt-2';
+                        deleteLink.style.width = '100%';
+                        deleteLink.textContent = 'Deletar';
+                        deleteEvento.innerHTML = '';
+                        deleteEvento.appendChild(deleteLink);
+                    }else{
+                        document.getElementById('id_titulo').disabled = true;
+                        document.getElementById('id_descricao').disabled = true;
+                        document.getElementById('id_data').disabled = true;
+                    }
+                    modalEvento = new bootstrap.Modal(document.getElementById('modalEvento'));
+                    modalEvento.show();              
+                }                
+                
+            });
+            calendar.render();
+        });
+    </script>
+
+    <script>
+        const modalEvento = document.getElementById('modalEvento')
+        if (modalEvento) {
+            modalEvento.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+            const tipo = button.getAttribute('data-bs-tipo');
+            const modalTitle = modalEvento.querySelector('.modal-title');
+            
+            var form = document.getElementById('formEvento');
+
+            if(tipo=="criar"){
+                document.getElementById('id_titulo').value = '';
+                document.getElementById('id_descricao').value = '';
+                document.getElementById('id_data').value = '';
+                form.action = `/evento/criar/`;
+                modalTitle.textContent = `Novo evento`;
+            }
+        })
+        }
+    </script>
+{% endblock 'script' %}

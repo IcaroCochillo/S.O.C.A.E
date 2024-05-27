@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block 'title' %}Contato{% endblock %}
+
+{% block 'body' %}
+    <div class="">
+        <div class="d-flex justify-content-around my-5">
+            <div>
+                <h1 class="text-light">Contato</h1>
+            </div>
+            <div>
+                <button 
+                    type="button" 
+                    class="btn btn-primary btn-lg"
+                    {% if not request.user.lider %}
+                        disabled
+                    {% endif %}
+                    data-bs-toggle="modal" data-bs-target="#modalContato"
+                >
+                Adicionar Contato
+                </button>
+            </div>
+        </div>
+        <div class="row">
+            {% for c in contatos %}
+                <div class="col-sm-4 mb-3 mb-sm-0 my-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{c.nome}}</h5>
+                            <p class="card-text">{{c.telefone}}</p>
+                            <p class="card-text">{{c.email}}</p>
+                            <p class="card-text">{{c.horario_atend}}</p>
+                            <div class="d-flex justify-content-around mt-3">
+                                {% if request.user.lider%}
+                                    <a href="#" class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#modalContato" 
+                                        data-bs-idcontato="{{c.id}}"
+                                        data-bs-nome="{{c.nome}}"
+                                        data-bs-telefone="{{c.telefone}}"
+                                        data-bs-email="{{c.email}}"
+                                        data-bs-horarioatend="{{c.horario_atend}}"
+                                        data-bs-tipo="editar"
+                                    >
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a href="{% url 'excluir-contato' c.id %}" class="btn btn-danger"onclick="return confirm('Tem certeza de que deseja excluir este contato?')"><i class="fa-solid fa-trash"></i></a>
+                                {% endif %}
+                            </div>                
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalContato" tabindex="-1" aria-labelledby="modalContatoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalContatoLabel">Criar Contato</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url "criar-contato" %}" method="POST" id="formContato" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                        </div>
+                        {% for field in formContato %}
+                            <div class="mb-3">
+                                {{ field|as_crispy_field }}
+                            </div>
+                        {% endfor %}
+                        <div class="col">
+                            <button style="width: 100%;" id="buttonSubmit" class="btn submit text-light btn-success my-2" type="submit">
+                                Salvar
+                            </button>
+                            <button style="width: 100%;" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Fechar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block 'script' %}
+    <script>
+        const modalContato = document.getElementById('modalContato')
+        if (modalContato) {
+            modalContato.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+
+            const idcontato = button.getAttribute('data-bs-idcontato');
+            const nome = button.getAttribute('data-bs-nome');
+            const telefone = button.getAttribute('data-bs-telefone');
+            const email = button.getAttribute('data-bs-email');
+            const horarioatend = button.getAttribute('data-bs-horarioatend');
+            const tipo = button.getAttribute('data-bs-tipo');
+
+            const modalTitle = modalContato.querySelector('.modal-title');
+            
+
+            var id_nome = document.getElementById('id_nome');
+            var id_telefone = document.getElementById('id_telefone');
+            var id_email = document.getElementById('id_email');
+            var id_horario_atend = document.getElementById('id_horario_atend');
+            
+            var form = document.getElementById('formContato');
+
+            id_nome.value = nome
+            id_telefone.value = telefone
+            id_email.value = email
+            id_horario_atend.value = horarioatend
+
+            if(tipo=="editar"){
+                form.action = `/contato/editar/${idcontato}/`;
+                modalTitle.textContent = `Editando o contato de ${nome}`;
+            }else{
+                form.action = `/contato/criar/`;
+                modalTitle.textContent = `Novo contato`
+            }
+        })
+        }
+    </script>
+{% endblock 'script' %}

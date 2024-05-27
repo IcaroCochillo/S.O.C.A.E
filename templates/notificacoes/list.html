@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block 'title' %}Notificações{% endblock %}
+
+{% block 'body' %}
+    <div class="">
+        <div class="d-flex justify-content-around my-5">
+            <div>
+                <h1 class="text-light">Notificações</h1>
+            </div>
+            <div>
+                <button 
+                    type="button" 
+                    class="btn btn-primary btn-lg"
+                    {% if not request.user.lider %}
+                        disabled
+                    {% endif %}
+                    data-bs-toggle="modal" data-bs-target="#modalNotificacao"
+                >
+                Adicionar Notificação
+                </button>
+            </div>
+        </div>
+
+        <div class="row">
+            {% if notificacoes %}
+                {% for n in notificacoes %}
+                    <div class="col-sm-4 mb-3 mb-sm-0 my-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">{{n.titulo}}</h5>
+                                <p class="card-text">{{n.assunto}}</p>
+                                {% if request.user.lider %}
+                                    <div class="d-flex justify-content-around mt-3">
+                                        <a href="#" class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#modalNotificacao" 
+                                            data-bs-notificacaotitulo="{{n.titulo}}"
+                                            data-bs-notificacaoassunto="{{n.assunto}}"
+                                            data-bs-tipo="editar"
+                                        >
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+                                        <form action="{% url 'excluir-notificacao' %}" method="post">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="notificacaotitulo" value="{{ n.titulo }}">
+                                            <button type="submit" class="btn btn-danger" onclick="return confirm('Tem certeza de que deseja excluir esta notificação para todos?')"><i class="fa-solid fa-trash"></i></button>
+                                        </form>
+                                    </div>
+                                {% endif %}                
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalNotificacao" tabindex="-1" aria-labelledby="modalNotificacaoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalNotificacaoLabel"></h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url "criar-notificacao" %}" method="POST" id="formNotificacao">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                        </div>
+                        {% for field in formNotificacao %}
+                            <div class="mb-3">
+                                {{ field|as_crispy_field }}
+                            </div>
+                        {% endfor %}
+                        <div class="col">
+                            <button style="width: 100%;" id="buttonSubmit" class="btn submit text-light btn-success my-2" type="submit">
+                                Salvar
+                            </button>
+                            <button style="width: 100%;" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Fechar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block 'script' %}
+
+    <script>
+        const modalNotificacao = document.getElementById('modalNotificacao');
+        if (modalNotificacao) {
+            modalNotificacao.addEventListener('show.bs.modal', event => {
+                const button = event.relatedTarget;
+                const notificacaotitulo = button.getAttribute('data-bs-notificacaotitulo');
+                const notificacaoassunto = button.getAttribute('data-bs-notificacaoassunto');
+                const tipo = button.getAttribute('data-bs-tipo');
+
+                const modalTitle = modalNotificacao.querySelector('.modal-title');
+                var form = document.getElementById('formNotificacao');
+                
+                var id_titulo = document.getElementById('id_titulo').value = notificacaotitulo;
+                var id_titulo = document.getElementById('id_assunto').value = notificacaoassunto;
+                var id_titulo_antigo = document.getElementById('id_titulo_antigo').value = notificacaotitulo;
+
+                if (tipo == "editar") {
+                    form.action = `/notificacao/editar/`;
+                    modalTitle.textContent = `Editando a Notificação ${notificacaotitulo}`;
+                } else {
+                    form.action = `/notificacao/criar/`;
+                    modalTitle.textContent = `Nova Notificação`;
+                }
+            });
+        }
+    </script>
+{% endblock 'script' %}

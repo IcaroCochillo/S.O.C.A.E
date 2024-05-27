@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block 'title' %}Lideres{% endblock %}
+
+{% block 'body' %}
+    <h1 class="text-light my-5">Aprovar a liderança</h1>
+    <form action="{% url 'liderInativos' %}" method="post">
+        {% csrf_token %}
+        <select class="form-select" name="usuarios_ativar" multiple>
+            {% for usuario in usuarios_inativos %}
+                <option value="{{ usuario.id }}">{{ usuario.username }} - {{ usuario.email }}</option>
+            {% endfor %}
+        </select>
+        <button class="btn btn-success mt-2" type="submit">Ativar Usuários Selecionados</button>
+    </form>
+{% endblock %}

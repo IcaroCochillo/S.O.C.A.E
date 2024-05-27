@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block 'title' %}Material{% endblock %}
+
+{% block 'body' %}
+    <div class="">
+        <div class="d-flex justify-content-around my-5">
+            <div>
+                <h1 class="text-light">Material</h1>
+            </div>
+            <div>
+                <button 
+                    type="button" 
+                    class="btn btn-primary btn-lg"
+                    {% if not request.user.lider %}
+                        disabled
+                    {% endif %}
+                    data-bs-toggle="modal" data-bs-target="#modalMaterial"
+                >
+                Adicionar Material
+                </button>
+            </div>
+        </div>
+        <div class="container">
+            <table class="table table-bordered" style="background-color: #403E3E; color: #fff;">
+                <thead>
+                  <tr>
+                    <th scope="col">Título</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Arquivo</th>
+                    <th scope="col">Opções</th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% for m in materiais %}
+                        <tr>
+                            <td>{{m.titulo}}</td>
+                            <td>{{m.descricao}}</td>
+                            <td>
+                                {% if m.arquivo %}                                
+                                    <a href="{{ m.arquivo.url }}" class="list-group-item list-group-item-action text-break" download="{{ m.arquivo.name|cut:'materiaisCurso/' }}">
+                                        {{ m.arquivo.name|cut:'materiaisCurso/' }}
+                                    </a>
+                                {% else %}
+                                    Não tem arquivo
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if request.user.lider%}
+                                    <a class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#modalMaterial" 
+                                        data-bs-idmaterial="{{m.id}}"
+                                        data-bs-titulo="{{m.titulo}}"
+                                        data-bs-descricao="{{m.descricao}}"
+                                        data-bs-tipo="editar"
+                                    >
+                                        <i class="fa-solid fa-pen"></i>
+                                    </a>
+                                    <a href="{% url 'excluir-material' m.id %}" class="btn btn-danger"onclick="return confirm('Tem certeza de que deseja excluir este material?')"><i class="fa-solid fa-trash"></i></a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="modalMaterial" tabindex="-1" aria-labelledby="modalMaterialLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="modalMaterialLabel">Criar Material</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url "criar-material" %}" method="POST" id="formMaterial" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                        </div>
+                        {% for field in formMaterial %}
+                            <div class="mb-3">
+                                {{ field|as_crispy_field }}
+                            </div>
+                        {% endfor %}
+                        <div class="col">
+                            <button style="width: 100%;" id="buttonSubmit" class="btn submit text-light btn-success my-2" type="submit">
+                                Salvar
+                            </button>
+                            <button style="width: 100%;" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Fechar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block 'script' %}
+    <script>
+        const modalMaterial = document.getElementById('modalMaterial')
+        if (modalMaterial) {
+            modalMaterial.addEventListener('show.bs.modal', event => {
+            const button = event.relatedTarget;
+
+            const idmaterial = button.getAttribute('data-bs-idmaterial');
+            const titulo = button.getAttribute('data-bs-titulo');
+            const descricao = button.getAttribute('data-bs-descricao');
+            const tipo = button.getAttribute('data-bs-tipo');
+
+            const modalTitle = modalMaterial.querySelector('.modal-title');
+            
+            var id_titulo = document.getElementById('id_titulo');
+            var id_descricao = document.getElementById('id_descricao');
+            
+            var form = document.getElementById('formMaterial');
+
+            id_titulo.value = titulo;
+            id_descricao.value = descricao;
+
+            if(tipo=="editar"){
+                form.action = `/material/editar/${idmaterial}/`;
+                modalTitle.textContent = `Editando o material ${titulo}`;
+            }else{
+                form.action = `/material/criar/`;
+                modalTitle.textContent = `Novo material`
+            }
+        })
+        }
+    </script>
+{% endblock 'script' %}
