@@ -1,26 +1,24 @@
-/*!
-* Start Bootstrap - Simple Sidebar v6.0.6 (https://startbootstrap.com/template/simple-sidebar)
-* Copyright 2013-2023 Start Bootstrap
-* Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-simple-sidebar/blob/master/LICENSE)
-*/
-// 
-// Scripts
-// 
+var elemento = document.getElementById('dark');
+var theme = document.getElementById('theme');
+document.getElementById("dark").onclick = function() {darklight()};
 
-window.addEventListener('DOMContentLoaded', event => {
-
-    // Toggle the side navigation
-    const sidebarToggle = document.body.querySelector('#sidebarToggle');
-    if (sidebarToggle) {
-        // Uncomment Below to persist sidebar toggle between refreshes
-        // if (localStorage.getItem('sb|sidebar-toggle') === 'true') {
-        //     document.body.classList.toggle('sb-sidenav-toggled');
-        // }
-        sidebarToggle.addEventListener('click', event => {
-            event.preventDefault();
-            document.body.classList.toggle('sb-sidenav-toggled');
-            localStorage.setItem('sb|sidebar-toggle', document.body.classList.contains('sb-sidenav-toggled'));
-        });
+function darklight() {
+    if (document.getElementById("dark").checked == true){
+        localStorage.setItem('theme','dark')
+        theme.setAttribute("data-bs-theme","dark");
     }
+    else{
+        localStorage.setItem('theme','light')
+        theme.setAttribute("data-bs-theme","light");
+    }
+}
 
-});
+if (localStorage.theme == 'dark'){
+    elemento.setAttribute("checked","");
+    theme.setAttribute("data-bs-theme","dark");
+
+} else if (localStorage.theme == 'light') {
+    theme.setAttribute("data-bs-theme","light");
+} else {
+    console.log('F');
+}

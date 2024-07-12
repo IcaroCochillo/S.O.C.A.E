@@ -13,7 +13,7 @@
     <div class="">
         <div class="d-flex justify-content-around my-5">
             <div>
-                <h1 class="text-light">Evento</h1>
+                <h1 >Evento</h1>
             </div>
             <div>
                 <button 
@@ -54,7 +54,7 @@
                         {% endfor %}
                         <div class="col">
                             {% if request.user.lider %}
-                                <button style="width: 100%;" id="buttonSubmit" class="btn submit text-light btn-success mt-2" type="submit">
+                                <button style="width: 100%;" id="buttonSubmit" class="btn submit  btn-success mt-2" type="submit">
                                     Salvar
                                 </button>
                                 <div id="deleteEvento"></div>
@@ -126,7 +126,7 @@
                     if(deleteEvento){
                         var deleteLink = document.createElement('a');
                         deleteLink.href = `/evento/excluir/${event.id}/`;
-                        deleteLink.className = 'btn text-light btn-danger mt-2';
+                        deleteLink.className = 'btn  btn-danger mt-2';
                         deleteLink.style.width = '100%';
                         deleteLink.textContent = 'Deletar';
                         deleteEvento.innerHTML = '';

@@ -7,17 +7,14 @@ from .models import Aluno
 from django.contrib import messages
 
 def registration(request):
+    form = UsuarioCreationForm()
+
     if request.method == 'POST':
         form = UsuarioCreationForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Conta criada, faça login")
             return redirect('login')
-        else:
-            messages.error(request, "ERRO")
-            return redirect('')
-    else:
-        form = UsuarioCreationForm()
     
     return render(request, 'registration/registration.html', {'registration' : True, 'form': form})
 

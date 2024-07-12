@@ -5,15 +5,10 @@ class Aluno(AbstractUserRole):
     # Definindo permissões para o Aluno
     available_permissions = {
         'visualizarContatoProfessor': True,
-
         'visualizarEventos': True,
-
         'visualizarMateriais': True,
-
         'visualizarMaterias': True,
-
         'visualizarTurmas': True,
-
         'visualizarNotificacoes': True,
     }
 

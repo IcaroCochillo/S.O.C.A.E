@@ -7,7 +7,7 @@
     <div class="">
         <div class="d-flex justify-content-around my-5">
             <div>
-                <h1 class="text-light">Contato</h1>
+                <h1 >Contato</h1>
             </div>
             <div>
                 <button 
@@ -27,10 +27,10 @@
                 <div class="col-sm-4 mb-3 mb-sm-0 my-3">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title">{{c.nome}}</h5>
-                            <p class="card-text">{{c.telefone}}</p>
-                            <p class="card-text">{{c.email}}</p>
-                            <p class="card-text">{{c.horario_atend}}</p>
+                            <h5 class="card-title">Nome: {{c.nome}}</h5>
+                            <p class="card-text">Tel: {{c.telefone}}</p>
+                            <p class="card-text">Email: {{c.email}}</p>
+                            <p class="card-text">Horário: {{c.horario_atend}}</p>
                             <div class="d-flex justify-content-around mt-3">
                                 {% if request.user.lider%}
                                     <a href="#" class="btn btn-warning" type="button" data-bs-toggle="modal" data-bs-target="#modalContato" 
@@ -72,7 +72,7 @@
                             </div>
                         {% endfor %}
                         <div class="col">
-                            <button style="width: 100%;" id="buttonSubmit" class="btn submit text-light btn-success my-2" type="submit">
+                            <button style="width: 100%;" id="buttonSubmit" class="btn submit  btn-success my-2" type="submit">
                                 Salvar
                             </button>
                             <button style="width: 100%;" type="button" class="btn btn-secondary" data-bs-dismiss="modal">
