@@ -1,7 +1,7 @@
 from django import forms
-from .models import Contatoprofessor
+from .models import Contato
 
-class ContatoprofessorForm(forms.ModelForm):
+class ContatoForm(forms.ModelForm):
     class Meta:
-        model = Contatoprofessor  # Define o modelo a ser utilizado pelo formulário
+        model = Contato  # Define o modelo a ser utilizado pelo formulário
         fields = ['nome', 'telefone', 'email', 'horario_atend']  # Define os campos a serem exibidos no formulário

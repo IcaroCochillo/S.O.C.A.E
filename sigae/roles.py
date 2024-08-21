@@ -4,7 +4,7 @@ from rolepermissions.roles import AbstractUserRole
 class Aluno(AbstractUserRole):
     # Definindo permissões para o Aluno
     available_permissions = {
-        'visualizarContatoProfessor': True,
+        'visualizarContato': True,
         'visualizarEventos': True,
         'visualizarMateriais': True,
         'visualizarMaterias': True,
@@ -15,10 +15,10 @@ class Aluno(AbstractUserRole):
 class Lider(AbstractUserRole):
     # Definindo permissões para o Lider
     available_permissions = {
-        'visualizarContatoProfessor': True,
-        'adicionarContatoProfessor': True, 
-        'editarContatoProfessor': True, 
-        'excluirContatoProfessor': True, 
+        'visualizarContato': True,
+        'adicionarContato': True, 
+        'editarContato': True, 
+        'excluirContato': True, 
 
         'visualizarEventos': True,
         'adicionarEvento': True,

@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     # myapps
-    'usuarios',
+    'alunos',
     'turmas',
     'contato',
     'evento',
@@ -69,7 +69,7 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'sigae.urls'
 
-AUTH_USER_MODEL = 'usuarios.Aluno'
+AUTH_USER_MODEL = 'alunos.Aluno'
 
 ROLEPERMISSIONS_MODULE = 'sigae.roles'
 

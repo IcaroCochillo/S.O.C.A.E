@@ -39,8 +39,8 @@
                             <td>{{m.descricao}}</td>
                             <td>
                                 {% if m.arquivo %}                                
-                                    <a href="{{ m.arquivo.url }}" class="list-group-item list-group-item-action text-break" download="{{ m.arquivo.name|cut:'materiaisCurso/' }}">
-                                        {{ m.arquivo.name|cut:'materiaisCurso/' }}
+                                    <a href="{{ m.arquivo.url }}" class="list-group-item list-group-item-action text-break" download="{{ m.arquivo.name|cut:'materiais/' }}">
+                                        {{ m.arquivo.name|cut:'materiais/' }}
                                     </a>
                                 {% else %}
                                     Não tem arquivo

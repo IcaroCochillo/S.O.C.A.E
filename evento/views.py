@@ -1,7 +1,7 @@
 from django.shortcuts import redirect, render, get_object_or_404
 
 from notificacao.models import Notificacao
-from usuarios.models import Aluno
+from alunos.models import Aluno
 from .models import Evento
 from .forms import EventoForm
 from rolepermissions.decorators import has_permission_decorator

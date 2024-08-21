@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TemplateView.as_view(template_name='home.html'), name='home'),
-    path('', include('usuarios.urls')),
+    path('', include('alunos.urls')),
     path('', include('contato.urls')),
     path('', include('evento.urls')),
     path('', include('materia.urls')),
@@ -17,5 +17,5 @@ urlpatterns = [
 ]
 urlpatterns += static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)
 
-handler403 = 'usuarios.views.handler403'
-handler404 = 'usuarios.views.handler404'
+handler403 = 'alunos.views.handler403'
+handler404 = 'alunos.views.handler404'

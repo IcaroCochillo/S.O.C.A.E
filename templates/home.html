@@ -1,10 +1,24 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block 'body' %}
-<header style="height: 100vh;" class="masthead d-flex align-items-center">
-    <div class="col">
-        <h1 class="text-center">PCC</h1>
+{% block 'home' %}
+<style>
+    .home {
+        height: 91vh;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover; 
+        background-image: url("{% static 'image/img1.jpg' %}");
+    }
+</style>
+
+<div class="home text-center d-flex align-items-center">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6" data-aos="fade-up-right">
+                <p class="fs-1 fw-bolder text-dark bg-secondary bg-opacity-25 rounded-5">Sistema de Organização e Compartilhamento de Atividades Escolares</p>
+            </div>
+        </div>
     </div>
-</header>
-{% endblock 'body' %}
+</div>
+{% endblock 'home' %}

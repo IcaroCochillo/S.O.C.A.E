@@ -1,6 +1,6 @@
 from django.contrib import admin
-from .models import Contatoprofessor
+from .models import Contato
 
-@admin.register(Contatoprofessor)
+@admin.register(Contato)
 class ContatoAdmin(admin.ModelAdmin):
     list_display = ('id', 'telefone', 'email', 'horario_atend', 'nome')

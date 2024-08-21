@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
-from usuarios.models import Aluno
+from alunos.models import Aluno
 from .models import Notificacao
 from .forms import NotificacaoForm
 from django.contrib import messages

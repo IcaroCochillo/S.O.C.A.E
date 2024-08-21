@@ -1,5 +1,5 @@
 from django.db import models
-from usuarios.models import Aluno
+from alunos.models import Aluno
 
 # Create your models here.
 class Notificacao(models.Model):
